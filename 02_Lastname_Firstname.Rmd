@@ -41,10 +41,8 @@ In the R chunk below, write code which will solve this problem.
 
 ```{r fizzbuzz-solution, echo = T}
 
-for (i in 1:30) {
-  # FizzBuzz code goes here
-  
-}
+# FizzBuzz code goes here
+
 
 
 ```
@@ -52,12 +50,12 @@ for (i in 1:30) {
 In the sas chunk, write similar code which will solve this problem.
 
 ```{sashtml fizzbuzz-sas, error = T}
-proc printto log="saslog.log" new;
-proc iml;
+PROC PRINTTO log="saslog.log" new;
+PROC IML;
 
 /* FizzBuzz code goes here */
 
-quit;
+QUIT;
 ```
 
 ```{r readlog}
@@ -93,12 +91,17 @@ url <- "https://dasl.datadescription.com/download/data/3052"
 df <- read_tsv(url)                                  # Read in the data
 df <- na.omit(df[,c(1, 3, 4, 5, 6)])                 # Remove missing observations
 df <- df[df$`List Price` < 60,]                      # Remove extreme observations
-
-X <- df[,c("List Price", "Hard/ Paper", "NumPages")] # Get variables of interest
-names(X) <- c("List", "Hardcover", "Pages")          # Rename for simplicity
-X$Hardcover <- X$Hardcover == "H"                    # Convert character variable 
-                                                     # to binary quantity 
+df$Hardcover <- df$`Hard/ Paper` == "H"              # Make character into
+                                                     # binary quantity 
                                                      # (0 = paperback, 1 = hardcover)
+
+# Write data out for SAS
+write_csv(df[,c("Amazon Price", "List Price", "Hardcover", "NumPages")], 
+          path = "amazon_books.csv", na = ".")
+
+X <- df[,c("List Price", "Hardcover", "NumPages")]   # Get variables of interest
+names(X) <- c("List", "Hardcover", "Pages")          # Rename for simplicity
+                                                     
 X1 <- as.matrix(X)       # Convert to numerical matrix (not data frame)
 
 X <- cbind(Intercept = 1, X1) # Add an extra column of 1s for the intercept
@@ -118,6 +121,7 @@ res <- rep(NA, 4)
 # Find the estimated coefficients for each of the explanatory variables using 
 # simple matrix operations
 # Store your answer in res: 
+
 # res <- .....
 
 
@@ -130,6 +134,45 @@ The regression equation is $\text{Amazon Price} = `r res[1]` + `r res[2]`(\text{
 
 
 ```{sas}
+********************************************************************************
+* Read in the data 
+********************************************************************************
+PROC IMPORT datafile = "amazon_books.csv" out=books
+  DBMS = csv; /* comma delimited file */
+  replace;
+  GETNAMES = YES;
+  
+********************************************************************************
+* Compute the regression using the canned procedure
+********************************************************************************
+PROC REG data=books;
+    MODEL Amazon_Price = List_Price Hardcover NumPages;
+RUN;
 
-
+********************************************************************************
+* IML Code
+********************************************************************************
+* I got the read all var _NUM_... lines from 
+* https://dasl.datadescription.com/datafile/amazon-books/?_sfm_methods=Multiple+Regression&_sfm_cases=4+59943 */
+********************************************************************************
+PROC IML;
+USE books;
+   read all var _NUM_ INTO X1[colname=varname]; /* Read numeric vars */
+CLOSE books;
+  
+Y = X1[,1]; /* Y pulled out */
+X1[,1] = 1; /* Intercept column */
+varname[1] = "Intercept";
+varname_t = varname`; /* Make a column vector to match the fitted coefs */
+    
+* PRINT Y X1 varname_t; /* Just checking */
+    
+/* Find the estimated coefficients for each of the explanatory variables using */
+/* simple matrix operations. Store your answer in res */
+    
+/* res = ... */
+     
+/* Dont edit this */     
+PRINT varname_t res; /* Print coefs with labels */
+QUIT;
 ```
