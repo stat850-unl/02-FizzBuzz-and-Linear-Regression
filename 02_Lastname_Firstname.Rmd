@@ -141,7 +141,8 @@ PROC IMPORT datafile = "amazon_books.csv" out=books
   DBMS = csv; /* comma delimited file */
   replace;
   GETNAMES = YES;
-  
+RUN;
+
 ********************************************************************************
 * Compute the regression using the canned procedure
 ********************************************************************************
