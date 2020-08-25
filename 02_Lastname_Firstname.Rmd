@@ -140,7 +140,6 @@ The regression equation is $\text{Amazon Price} = `r res[1]` + `r res[2]`(\text{
 PROC IMPORT datafile = "amazon_books.csv" out=books
   DBMS = csv; /* comma delimited file */
   replace;
-  GETNAMES = YES;
 RUN;
 
 ********************************************************************************
