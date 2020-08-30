@@ -143,13 +143,13 @@ PROC REG data=books plots=none;
   MODEL Amazon_Price = List_Price HC NumPages;
 RUN;
 
-
 /********************************************************************************
 * IML Code
 ********************************************************************************/
 /* I got the read all var _NUM_... lines from 
 * https://dasl.datadescription.com/datafile/amazon-books/?_sfm_methods=Multiple+Regression&_sfm_cases=4+59943 */
 /********************************************************************************/
+
 PROC IML;
 USE books;
    read all var _NUM_ INTO X1[colname=varname]; /* Read numeric vars */
