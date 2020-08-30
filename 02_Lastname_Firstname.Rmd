@@ -49,23 +49,12 @@ In the R chunk below, write code which will solve this problem.
 
 In the sas chunk, write similar code which will solve this problem.
 
-```{sashtml fizzbuzz-sas, error = T}
-PROC PRINTTO log="saslog.log" new;
+```{r fizzbuzz-sas, engine="sashtml", engine.path=sasexe, engine.opts=sasopts, error = T}
 PROC IML;
 
 /* FizzBuzz code goes here */
 
 QUIT;
-```
-
-```{r readlog}
-cat(readLines("saslog.log"), sep="\n")
-```
-
-
-```{r cleanuplog}
-# Do not forget to remove the log file when you are done!
-unlink("saslog.log")
 ```
 
 
@@ -132,29 +121,35 @@ print(res)
 
 The regression equation is $\text{Amazon Price} = `r res[1]` + `r res[2]`(\text{List Price}) `r res[3]`(\text{is Hardcover})  `r res[4]`(\text{# Pages})$
 
-
-```{sas}
-********************************************************************************
+```{r sas-regression, engine="sashtml", engine.path=sasexe, engine.opts=sasopts, error = T}
+/********************************************************************************
 * Read in the data 
-********************************************************************************
+********************************************************************************/
 PROC IMPORT datafile = "amazon_books.csv" out=books
-  DBMS = csv; /* comma delimited file */
+  DBMS = csv /* comma delimited file */
   replace;
-  GETNAMES = YES;
-  
-********************************************************************************
-* Compute the regression using the canned procedure
-********************************************************************************
-PROC REG data=books;
-    MODEL Amazon_Price = List_Price Hardcover NumPages;
 RUN;
 
-********************************************************************************
+DATA books;
+  set books;
+  HC = Hardcover = 'TRUE';
+  drop Hardcover;
+RUN;
+  
+/********************************************************************************
+* Compute the regression using the canned procedure
+********************************************************************************/
+PROC REG data=books plots=none;
+  MODEL Amazon_Price = List_Price HC NumPages;
+RUN;
+
+
+/********************************************************************************
 * IML Code
-********************************************************************************
-* I got the read all var _NUM_... lines from 
+********************************************************************************/
+/* I got the read all var _NUM_... lines from 
 * https://dasl.datadescription.com/datafile/amazon-books/?_sfm_methods=Multiple+Regression&_sfm_cases=4+59943 */
-********************************************************************************
+/********************************************************************************/
 PROC IML;
 USE books;
    read all var _NUM_ INTO X1[colname=varname]; /* Read numeric vars */
@@ -169,8 +164,8 @@ varname_t = varname`; /* Make a column vector to match the fitted coefs */
     
 /* Find the estimated coefficients for each of the explanatory variables using */
 /* simple matrix operations. Store your answer in res */
-    
-/* res = ... */
+
+res = ...
      
 /* Dont edit this */     
 PRINT varname_t res; /* Print coefs with labels */
