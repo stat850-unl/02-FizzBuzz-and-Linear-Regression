@@ -25,7 +25,13 @@ sasopts <- "-ls 75"
 ## Instructions
 This homework has two main problems. You should edit only the code chunks (and not the structure of the rest of the document) and the author: statement at the top of the file. 
 
-When you are finished with the assignment: 
+### Read this first!
+Note that while the linear regression portion of the assignment does require an external file, the R chunk that sets the problem up will download that file, clean it up a bit, and save it to your machine in the current working directory (the same folder where this file lives). If you run that chunk once (even if nothing else is working), you should have the correct file (amazon\_books.csv) to work in SAS.
+
+If you are developing your SAS code in SAS and then pasting it into this document, you will need to set the working directory of SAS first, so that it is also operating out of the folder this document lives in (and so that it has access to the csv file). 
+
+
+### When you are finished: 
 
 1. Save the file as 02_Lastname_Firstname.Rmd and compile it
 2. Commit the Rmd file and corresponding html file to your homework git repo
