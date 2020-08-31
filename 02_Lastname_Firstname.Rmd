@@ -122,7 +122,7 @@ res <- rep(NA, 4)
 print(res) 
 ```
 
-The regression equation is $\text{Amazon Price} = `r res[1]` + `r res[2]`(\text{List Price}) `r res[3]`(\text{is Hardcover})  `r res[4]`(\text{# Pages})$
+The regression equation is $\text{Amazon Price} = `r res[1]` + `r res[2]`(\text{List Price}) + `r res[3]`(\text{is Hardcover})  + `r res[4]`(\text{# Pages})$
 
 ```{r sas-regression, engine="sashtml", engine.path=sasexe, engine.opts=sasopts, error = T}
 /********************************************************************************
